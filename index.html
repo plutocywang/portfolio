@@ -43,9 +43,7 @@
     <script type="text/babel">
     const { useState, useEffect, createElement } = React;
     
-    // --- Inlined SVG Icon Components (FIXED: Bypassing external dependency errors) ---
-    // These components directly render the necessary SVG paths.
-    
+    // --- Inlined SVG Icon Components (Stable and avoids external dependency errors) ---
     const SVGIcon = ({ d, size = 20, fill = 'none', stroke = 'currentColor', className = '' }) => (
         <svg 
             xmlns="http://www.w3.org/2000/svg" 
@@ -63,40 +61,42 @@
         </svg>
     );
 
-    const Play = (props) => <SVGIcon d="M5 3 19 12 5 21 5 3Z" {...props} />;
-    const Menu = (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
-        </svg>
-    );
-    const X = (props) => <SVGIcon d="M18 6 6 18M6 6l12 12" {...props} />;
-    const Instagram = (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-        </svg>
-    );
-    const Mail = (props) => <SVGIcon d="M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7" {...props} />; // Adjusted path for better representation
-    const ChevronRight = (props) => <SVGIcon d="m9 18 6-6-6-6" {...props} />;
-    
-    // Category Icons
-    const Film = (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7h18"/><path d="M3 17h18"/><path d="M17 3v18"/>
-        </svg>
-    );
-    const Monitor = (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-            <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
-        </svg>
-    );
-    const Music = (props) => <SVGIcon d="M9 18V5l12-2v13M6 21v-3a3 3 0 1 1 6 0v3" {...props} />;
-    const Video = (props) => <SVGIcon d="m22 8-6 4 6 4V8ZM14 12H3" {...props} />;
-    const Tv = (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-            <rect width="20" height="15" x="2" y="7" rx="2"/><path d="M17 2v5"/><path d="M7 2v5"/>
-        </svg>
-    );
-    const ExternalLink = (props) => <SVGIcon d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" {...props} />;
+    const IconWrapper = ({ name, size = 20, fill = 'none', stroke = 'currentColor', className = '' }) => {
+        const icons = {
+            Play: <SVGIcon d="M5 3 19 12 5 21 5 3Z" size={size} fill={fill} stroke={stroke} className={className} />,
+            Menu: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>,
+            X: <SVGIcon d="M18 6 6 18M6 6l12 12" size={size} fill={fill} stroke={stroke} className={className} />,
+            Instagram: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>,
+            Mail: <SVGIcon d="M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7" size={size} fill={fill} stroke={stroke} className={className} />,
+            ChevronRight: <SVGIcon d="m9 18 6-6-6-6" size={size} fill={fill} stroke={stroke} className={className} />,
+            Film: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7h18"/><path d="M3 17h18"/><path d="M17 3v18"/></svg>,
+            Monitor: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
+            Music: <SVGIcon d="M9 18V5l12-2v13M6 21v-3a3 3 0 1 1 6 0v3" size={size} fill={fill} stroke={stroke} className={className} />,
+            Video: <SVGIcon d="m22 8-6 4 6 4V8ZM14 12H3" size={size} fill={fill} stroke={stroke} className={className} />,
+            Tv: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="15" x="2" y="7" rx="2"/><path d="M17 2v5"/><path d="M7 2v5"/></svg>,
+            ExternalLink: <SVGIcon d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" size={size} fill={fill} stroke={stroke} className={className} />,
+            Award: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 22l5-5 5 5-1.21-8.11"/><path d="M11 15h2"/></svg>,
+            Briefcase: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+        };
+
+        return icons[name] || <span className={`text-xl ${className}`}>☐</span>;
+    };
+
+    // --- Specific Icons defined for cleaner usage ---
+    const Play = (props) => <IconWrapper name="Play" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Menu = (props) => <IconWrapper name="Menu" fill={props.fill} stroke={props.stroke} {...props} />;
+    const X = (props) => <IconWrapper name="X" fill={props.fill} stroke={props.stroke} {...props} />;
+    const ChevronRight = (props) => <IconWrapper name="ChevronRight" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Instagram = (props) => <IconWrapper name="Instagram" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Mail = (props) => <IconWrapper name="Mail" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Film = (props) => <IconWrapper name="Film" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Monitor = (props) => <IconWrapper name="Monitor" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Music = (props) => <IconWrapper name="Music" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Video = (props) => <IconWrapper name="Video" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Tv = (props) => <IconWrapper name="Tv" fill={props.fill} stroke={props.stroke} {...props} />;
+    const ExternalLink = (props) => <IconWrapper name="ExternalLink" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Award = (props) => <IconWrapper name="Award" fill={props.fill} stroke={props.stroke} {...props} />;
+    const Briefcase = (props) => <IconWrapper name="Briefcase" fill={props.fill} stroke={props.stroke} {...props} />;
 
 
     // Single video embed component with Click-to-Play logic
@@ -110,7 +110,6 @@
         setIsPlayed(true);
       };
 
-      // Play Icon is now guaranteed to exist via IconWrapper logic
       const PlayIcon = Play;
 
       return (
@@ -127,7 +126,6 @@
                 onError={(e) => e.target.src = `https://placehold.co/480x270/1a1a1a/cccccc?text=${title}`}
               />
               <div className="absolute z-10 p-5 rounded-full bg-ikea-yellow/80 hover:bg-ikea-yellow transition-all duration-300 transform group-hover:scale-110 shadow-2xl">
-                {/* 傳遞 fill 屬性給 Play Icon (SVG) */}
                 <PlayIcon size={32} fill="#003366" stroke="#003366" className="ml-1" />
               </div>
               <span className="absolute z-10 bottom-4 right-4 text-xs font-medium bg-black/70 px-2 py-1 rounded text-white/80">Click to Play</span>
@@ -268,15 +266,20 @@
           if (el) observer.observe(el);
         });
 
+        // Also observe the highlights section
+        const highlightsEl = document.getElementById('highlights');
+        if (highlightsEl) observer.observe(highlightsEl);
+
+
         return () => {
           categories.forEach(cat => {
             const el = document.getElementById(cat.id);
             if (el) observer.unobserve(el);
           });
+          if (highlightsEl) observer.unobserve(highlightsEl);
         };
       }, []);
 
-      // 圖示已經透過內嵌 SVG 包裝，現在可以安全地使用
       const MenuIcon = Menu;
       const XIcon = X;
       const ChevronRightIcon = ChevronRight;
@@ -294,6 +297,12 @@
 
               {/* Desktop Menu */}
               <div className="hidden md:flex space-x-8">
+                <button
+                    onClick={() => scrollToSection('highlights')}
+                    className={`text-sm tracking-widest hover:text-ikea-yellow transition-colors uppercase ${activeSection === 'highlights' ? 'text-ikea-yellow' : 'text-white'}`}
+                >
+                    HIGHLIGHTS
+                </button>
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
@@ -315,6 +324,13 @@
             {isMenuOpen && (
               <div className="md:hidden absolute top-full left-0 w-full bg-ikea-blue/95 backdrop-blur-xl border-b border-ikea-yellow/30 animate-fade-in">
                 <div className="flex flex-col py-4">
+                  <button
+                      onClick={() => scrollToSection('highlights')}
+                      className="py-4 px-8 text-left hover:bg-ikea-yellow/10 text-white hover:text-ikea-yellow transition-colors border-l-2 border-transparent hover:border-ikea-yellow"
+                  >
+                    <span className="block text-lg font-medium">HIGHLIGHTS</span>
+                    <span className="text-xs text-ikea-light-yellow uppercase tracking-wider">Awards & Experience</span>
+                  </button>
                   {categories.map((cat) => (
                     <button
                       key={cat.id}
@@ -349,16 +365,94 @@
                 Specializing in visual aesthetics and narrative filmmaking. Works span Commercials, Narrative Shorts, MVs, and New Media installations.
               </p>
               <button 
-                onClick={() => scrollToSection('newmedia')}
+                onClick={() => scrollToSection('highlights')}
                 className="group relative inline-flex items-center px-8 py-3 overflow-hidden rounded border border-white/20 bg-ikea-yellow hover:bg-yellow-300 transition-colors duration-300"
               >
                 <span className="relative flex items-center space-x-2 text-ikea-blue group-hover:text-ikea-dark-blue transition-colors">
-                  <span>VIEW WORKS</span>
+                  <span>VIEW HIGHLIGHTS</span>
                   <ChevronRightIcon size={16} />
                 </span>
               </button>
             </div>
           </header>
+
+          {/* --- HIGHLIGHTS SECTION --- */}
+          <section id="highlights" className="max-w-7xl mx-auto px-4 md:px-6 py-24 bg-ikea-dark-blue rounded-xl shadow-2xl -mt-20">
+            <h3 className="text-4xl font-extrabold text-center mb-12 text-ikea-yellow tracking-wider uppercase">
+                Career Highlights
+            </h3>
+
+            <div className="grid md:grid-cols-2 gap-12">
+                {/* Awards Column */}
+                <div>
+                    <div className="flex items-center mb-6 space-x-3">
+                        <Award size={32} stroke="#FFDA1A" fill="none" className="text-ikea-yellow"/>
+                        <h4 className="text-2xl font-bold border-b border-ikea-yellow/50 pb-1 text-white">Selected Awards & Recognition</h4>
+                    </div>
+                    <ul className="space-y-6 text-base text-white/90">
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Best Experimental</span> in Golden Rooster Award (Mobile Short Film Project) | 2020
+                                <span className="block text-sm text-white/70">Film: *Save the Earth*. Recognized for redefining mobile filmmaking as a distinct narrative medium.</span>
+                            </p>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Best Narrative Prize</span> in Taipei Film Festival VR Hackathon | 2018
+                                <span className="block text-sm text-white/70">Project: *Free Will*. Awarded for an interactive VR experience exploring Taiwan's human rights history.</span>
+                            </p>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Excellence Script</span> in Young Screenwriters Conference | 2024
+                                <span className="block text-sm text-white/70">Script: *Cross the River in Summer*. Recognized for complex emotional landscape research.</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Experience Column */}
+                <div>
+                    <div className="flex items-center mb-6 space-x-3">
+                        <Briefcase size={32} stroke="#FFDA1A" fill="none" className="text-ikea-yellow"/>
+                        <h4 className="text-2xl font-bold border-b border-ikea-yellow/50 pb-1 text-white">Key Professional Experience</h4>
+                    </div>
+                    <ul className="space-y-6 text-base text-white/90">
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Lecturer & Studio Head</span> at Xiamen University Tan Kah Kee College | 2018–2025
+                                <span className="block text-sm text-white/70">Taught narrative film, VR, and documentary production; led the Sirius Creative Media Studio.</span>
+                            </p>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Founder & Creative Director</span> at Xiamen Pluto Media Co., Ltd. | 2019–2024
+                                <span className="block text-sm text-white/70">Managed creative and production departments for advertising, documentary, and self-media IP development.</span>
+                            </p>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Director & Post-Production Supervisor</span> at Lambda Film Co., Ltd. | 2017–2018
+                                <span className="block text-sm text-white/70">Collaborated with luxury brands including VOGUE, GQ, CHANEL, and Louis Vuitton.</span>
+                            </p>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                            <span className="text-ikea-yellow flex-shrink-0">›</span>
+                            <p>
+                                <span className="font-semibold text-ikea-yellow">Mega-Influencer / KOL</span> (4M Fans) & Social Media Manager | 2019–2022
+                                <span className="block text-sm text-white/70">Managed a food channel; focused on audience research, content strategy, and monetization.</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+          </section>
 
           {/* Portfolio Sections */}
           <main className="max-w-7xl mx-auto px-4 md:px-6 pb-24 space-y-32 scroll-pt-28">
@@ -415,17 +509,12 @@
             <div className="max-w-7xl mx-auto px-6 text-center">
               <h2 className="text-3xl font-bold mb-8 tracking-widest text-white">CHUNG-YI WANG (PLUTO)</h2>
               
-              <div className="flex justify-center space-x-8 mb-12">
-                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="Email">
-                  <Mail size={20} />
-                </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="Instagram">
-                  <Instagram size={20} />
-                </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="YouTube">
-                  <Play size={20} fill="currentColor" />
-                </a>
-              </div>
+              {/* Removed social media icons/buttons */}
+              
+              {/* Display Email Address - Adjusted margin to separate from the copyright text */}
+              <p className="text-ikea-light-yellow text-base mb-8"> 
+                Email: pluto.cywang@gmail.com
+              </p>
 
               <p className="text-ikea-light-yellow text-sm">
                 &copy; {new Date().getFullYear()} Chung-Yi Wang (PLUTO). All Rights Reserved.
