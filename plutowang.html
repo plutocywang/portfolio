@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHUNG-YI WANG (PLUTO) | VISUAL PORTFOLIO</title>
+    <!-- Tailwind CSS (for styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Configuration for IKEA colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ikea-blue': '#003366',
+                        'ikea-dark-blue': '#002244',
+                        'ikea-yellow': '#FFDA1A',
+                        'ikea-light-yellow': '#FFFF66',
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- React and ReactDOM 18 -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      /* Ensure smooth scrolling for navigation */
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Fix for fixed header blocking content anchors */
+      :target {
+        scroll-padding-top: 100px; /* Space equal to header height */
+      }
+    </style>
+</head>
+<body class="bg-ikea-blue">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+    const { useState, useEffect, createElement } = React;
+    
+    // --- Inlined SVG Icon Components (FIXED: Bypassing external dependency errors) ---
+    // These components directly render the necessary SVG paths.
+    
+    const SVGIcon = ({ d, size = 20, fill = 'none', stroke = 'currentColor', className = '' }) => (
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width={size} 
+            height={size} 
+            viewBox="0 0 24 24" 
+            fill={fill} 
+            stroke={stroke} 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            className={className}
+        >
+            <path d={d} />
+        </svg>
+    );
+
+    const Play = (props) => <SVGIcon d="M5 3 19 12 5 21 5 3Z" {...props} />;
+    const Menu = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+    );
+    const X = (props) => <SVGIcon d="M18 6 6 18M6 6l12 12" {...props} />;
+    const Instagram = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+        </svg>
+    );
+    const Mail = (props) => <SVGIcon d="M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7M22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7" {...props} />; // Adjusted path for better representation
+    const ChevronRight = (props) => <SVGIcon d="m9 18 6-6-6-6" {...props} />;
+    
+    // Category Icons
+    const Film = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7h18"/><path d="M3 17h18"/><path d="M17 3v18"/>
+        </svg>
+    );
+    const Monitor = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+            <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+        </svg>
+    );
+    const Music = (props) => <SVGIcon d="M9 18V5l12-2v13M6 21v-3a3 3 0 1 1 6 0v3" {...props} />;
+    const Video = (props) => <SVGIcon d="m22 8-6 4 6 4V8ZM14 12H3" {...props} />;
+    const Tv = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill={props.fill || 'none'} stroke={props.stroke || 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+            <rect width="20" height="15" x="2" y="7" rx="2"/><path d="M17 2v5"/><path d="M7 2v5"/>
+        </svg>
+    );
+    const ExternalLink = (props) => <SVGIcon d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" {...props} />;
+
+
+    // Single video embed component with Click-to-Play logic
+    const VideoEmbed = ({ id, title }) => {
+      const [isPlayed, setIsPlayed] = useState(false);
+      // YouTube Thumbnail URL
+      const thumbnailUrl = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      
+      const handlePlayClick = (e) => {
+        e.preventDefault();
+        setIsPlayed(true);
+      };
+
+      // Play Icon is now guaranteed to exist via IconWrapper logic
+      const PlayIcon = Play;
+
+      return (
+        <div className="aspect-w-16 aspect-h-9 w-full relative pt-[56.25%]">
+          {!isPlayed ? (
+            <div 
+              className="absolute inset-0 cursor-pointer bg-black/50 flex items-center justify-center transition-opacity duration-300"
+              onClick={handlePlayClick}
+            >
+              <img 
+                src={thumbnailUrl} 
+                alt={title} 
+                className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                onError={(e) => e.target.src = `https://placehold.co/480x270/1a1a1a/cccccc?text=${title}`}
+              />
+              <div className="absolute z-10 p-5 rounded-full bg-ikea-yellow/80 hover:bg-ikea-yellow transition-all duration-300 transform group-hover:scale-110 shadow-2xl">
+                {/* 傳遞 fill 屬性給 Play Icon (SVG) */}
+                <PlayIcon size={32} fill="#003366" stroke="#003366" className="ml-1" />
+              </div>
+              <span className="absolute z-10 bottom-4 right-4 text-xs font-medium bg-black/70 px-2 py-1 rounded text-white/80">Click to Play</span>
+            </div>
+          ) : (
+            <iframe 
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`} 
+              title={title}
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowFullScreen
+            ></iframe>
+          )}
+        </div>
+      );
+    };
+
+
+    const Portfolio = () => {
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+      const [activeSection, setActiveSection] = useState('newmedia'); 
+      const [scrolled, setScrolled] = useState(false);
+
+      useEffect(() => {
+        const handleScroll = () => {
+          setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const categories = [
+        {
+          id: 'newmedia', 
+          title: 'NEW MEDIA',
+          subtitle: 'VR & Installations',
+          icon: <Monitor size={20} />,
+          playlistUrl: 'https://www.youtube.com/playlist?list=PLzVnmFjMEHZbheD7g7Xr9M-CWnD8_Zd1c',
+          desc: 'Experimental exploration on the boundaries of technology and immersive art.',
+          videos: [
+            { id: 'B_bfqx2DUV0', title: 'Between Cubes | Before, Beyond, Behind (Multi‑Screen Movie DEMO)' },
+            { id: 'rVJP5zkQnV8', title: 'Trinity - Official Trailer' },
+            { id: '-nrtKO1k5Sg', title: 'A Barbie [ VR video ]' },
+            { id: 'F-Dg1rsyZRQ', title: 'FreeWill | VR film' },
+          ]
+        },
+        {
+          id: 'narrative', 
+          title: 'NARRATIVE SHORTS',
+          subtitle: 'Fiction & Film Festival Entries',
+          icon: <Film size={20} />,
+          playlistUrl: 'https://www.youtube.com/playlist?list=PLzVnmFjMEHZZZQftcO9QaftmcsqQrY6Gm',
+          desc: 'A visual journey exploring humanity, emotion, and compelling narratives.',
+          videos: [
+            { id: 'fprEbiuKmic', title: 'Behind the OCD (The Making Of)' },
+            { id: 'q0517WLvcaw', title: 'The Horror Box' },
+            { id: '3rV2bjruffU', title: 'Save the Earth (Best Experimental Film, China Golden Rooster)' },
+            { id: 'XCxMh7jlVvQ', title: 'Escape from the Haisi Town' },
+            { id: 'qPnqQvv-bFc', title: 'Satay Noodles' },
+          ]
+        },
+        {
+          id: 'mvs', 
+          title: 'MUSIC VIDEOS',
+          subtitle: 'Visuals for Auditory Art',
+          icon: <Music size={20} />,
+          playlistUrl: 'https://www.youtube.com/playlist?list=PLzVnmFjMEHZapxgpAKAYEH5OeMMwICAn5',
+          desc: 'The symphonic resonance and dynamic relationship between music and visual arts.',
+          videos: [
+            { id: 'TFWN9tBrh5c', title: 'Ling Yu x Lo Si-rong: \'Daughter K Babbling\' (Official MV)' },
+            { id: 'cX4_tGSH5_w', title: 'HauYun Lo | Waves 〖浪〗 (Official Music Video)' },
+            { id: 'D4jLeZvmq80', title: 'The Chairs | The Golden Age Blues (Official Music Video)' },
+          ]
+        },
+        {
+          id: 'documentary', 
+          title: 'DOCUMENTARY',
+          subtitle: 'Realistic & Depth Studies',
+          icon: <Video size={20} />,
+          playlistUrl: 'https://www.youtube.com/playlist?list=PLzVnmFjMEHZbLsOP2uIgezYuw6CN6YR-s',
+          desc: 'A deep gaze and realistic perspective on diverse subjects and human life.',
+          videos: [
+            { id: 'XZ0oBa3I2Fw', title: 'The Radish in the Wind' },
+            { id: '88b_qfQyXX0', title: 'Card Buddy' }, 
+          ]
+        },
+        {
+          id: 'commercials', 
+          title: 'COMMERCIALS',
+          subtitle: 'Advertising & Brand Films',
+          icon: <Tv size={20} />,
+          playlistUrl: 'https://www.youtube.com/playlist?list=PLzVnmFjMEHZbn5Zfyc5xqTk__Ry2ro0wN',
+          desc: 'Visual transformation of commercial image and narrative brand storytelling.',
+          videos: [
+            { id: 'uijofDpVIiY', title: 'Lambda Film Showreel' },
+            { id: 'Warl_zc5meU', title: 'JLC | Sonia Sui\'s Interpretation of Rendez-Vous Moon Watch' },
+            { id: 'FJrv2X5g20Q', title: 'Q-Way Fashion | Interview with the Laundromat Artisan' }, 
+            { id: 'vrHWi36dQFo', title: 'AVON Little Black Dress | Brand Video' },
+            { id: 'px5Ciff4KVI', title: 'AVON ANEW | Janet & Egan\'s First Mother\'s Day' },
+            { id: '5aidqf70YdY', title: 'Plan B | Park Up' },
+            { id: 't9H4dMfXNuc', title: 'A.mart Own Brand Promotion' },
+            { id: '4x3H4tyTyLE', title: 'A.mart | New Baking Series Launch' },
+            { id: 'FHoUtd1co9c', title: 'Family Breakfast Commercial' },
+            { id: '1EMpKirzzIc', title: 'KidsDiary Introduction' },
+            { id: 'JcVY9llr_y4', title: 'Wuyishan Hexing Rock Tea Commercial' },
+            { id: 'xRTdQzWHplY', title: 'Do You Remember Game Boy?' },
+            { id: 'W1AMS4rXImw', title: 'ITRI X NTSO AR Interactive Pop-up Book' },
+            { id: 'GSkZScivcc8', title: 'Horizon 8 Luggage Commercial' },
+            { id: 'gqjVj1po510', title: 'Taoyuan Airport Radar Introduction' },
+            { id: 'sHHuFBSK5eU', title: 'Taitung Airport Radar Introduction' },
+          ]
+        },
+      ];
+
+      const scrollToSection = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' }); 
+          setActiveSection(id);
+          setIsMenuOpen(false);
+        }
+      };
+      
+      useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              setActiveSection(entry.target.id);
+            }
+          });
+        }, {
+          rootMargin: '-50% 0px -50% 0px', 
+        });
+
+        categories.forEach(cat => {
+          const el = document.getElementById(cat.id);
+          if (el) observer.observe(el);
+        });
+
+        return () => {
+          categories.forEach(cat => {
+            const el = document.getElementById(cat.id);
+            if (el) observer.unobserve(el);
+          });
+        };
+      }, []);
+
+      // 圖示已經透過內嵌 SVG 包裝，現在可以安全地使用
+      const MenuIcon = Menu;
+      const XIcon = X;
+      const ChevronRightIcon = ChevronRight;
+
+      return (
+        <div className="min-h-screen bg-ikea-blue text-white font-sans selection:bg-ikea-yellow selection:text-black">
+          
+          {/* Navigation Bar */}
+          <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-ikea-blue/90 backdrop-blur-md py-4 shadow-lg border-b border-ikea-yellow/30' : 'bg-transparent py-6'}`}>
+            <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+              <div className="flex flex-col cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                <h1 className="text-2xl font-bold tracking-[0.2em] group-hover:text-ikea-yellow transition-colors">CHUNG-YI WANG (PLUTO)</h1>
+                <span className="text-xs text-ikea-light-yellow tracking-[0.4em] group-hover:text-white transition-colors">VISUAL PORTFOLIO</span>
+              </div>
+
+              {/* Desktop Menu */}
+              <div className="hidden md:flex space-x-8">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => scrollToSection(cat.id)}
+                    className={`text-sm tracking-widest hover:text-ikea-yellow transition-colors uppercase ${activeSection === cat.id ? 'text-ikea-yellow' : 'text-white'}`}
+                  >
+                    {cat.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+              </button>
+            </div>
+
+            {/* Mobile Dropdown Menu */}
+            {isMenuOpen && (
+              <div className="md:hidden absolute top-full left-0 w-full bg-ikea-blue/95 backdrop-blur-xl border-b border-ikea-yellow/30 animate-fade-in">
+                <div className="flex flex-col py-4">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => scrollToSection(cat.id)}
+                      className="py-4 px-8 text-left hover:bg-ikea-yellow/10 text-white hover:text-ikea-yellow transition-colors border-l-2 border-transparent hover:border-ikea-yellow"
+                    >
+                      <span className="block text-lg font-medium">{cat.title}</span>
+                      <span className="text-xs text-ikea-light-yellow uppercase tracking-wider">{cat.subtitle}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </nav>
+
+          {/* Hero Section */}
+          <header className="relative pt-32 h-[80vh] flex items-center justify-center overflow-hidden">
+            {/* Background Gradient/Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#004080] via-ikea-blue to-ikea-blue opacity-90"></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-ikea-yellow/10 rounded-full blur-[128px]"></div>
+            
+            <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+              <div className="inline-flex items-center space-x-2 text-ikea-yellow mb-6 tracking-[0.3em] text-sm uppercase">
+                <span className="w-8 h-[1px] bg-ikea-yellow"></span>
+                <span>Director / Visual Artist</span>
+                <span className="w-8 h-[1px] bg-ikea-yellow"></span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-br from-white to-ikea-light-yellow">
+                Capturing the Fleeting<br/>and the Eternal
+              </h2>
+              <p className="text-ikea-light-yellow max-w-xl mx-auto mb-10 text-lg leading-relaxed font-light">
+                Specializing in visual aesthetics and narrative filmmaking. Works span Commercials, Narrative Shorts, MVs, and New Media installations.
+              </p>
+              <button 
+                onClick={() => scrollToSection('newmedia')}
+                className="group relative inline-flex items-center px-8 py-3 overflow-hidden rounded border border-white/20 bg-ikea-yellow hover:bg-yellow-300 transition-colors duration-300"
+              >
+                <span className="relative flex items-center space-x-2 text-ikea-blue group-hover:text-ikea-dark-blue transition-colors">
+                  <span>VIEW WORKS</span>
+                  <ChevronRightIcon size={16} />
+                </span>
+              </button>
+            </div>
+          </header>
+
+          {/* Portfolio Sections */}
+          <main className="max-w-7xl mx-auto px-4 md:px-6 pb-24 space-y-32 scroll-pt-28">
+            {categories.map((category, index) => (
+              <section key={category.id} id={category.id}> 
+                {/* Category Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b border-ikea-yellow/30 pb-6">
+                  <div>
+                    <div className="flex items-center space-x-3 text-ikea-yellow mb-2">
+                      {category.icon}
+                      <span className="text-sm font-mono tracking-widest uppercase">0{index + 1} / Collection</span>
+                    </div>
+                    <h3 className="text-3xl md:text-4xl font-bold">{category.title}</h3>
+                    <span className="text-ikea-light-yellow text-lg font-light tracking-wide">{category.subtitle}</span>
+                  </div>
+                  <p className="mt-4 md:mt-0 text-ikea-light-yellow text-sm max-w-md text-right hidden md:block">
+                    {category.desc}
+                  </p>
+                </div>
+
+                {/* Video Grid (Thumbnail Wall) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {category.videos.map((video) => (
+                    <div key={video.id} className="group cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-ikea-yellow/30 hover:scale-[1.02] bg-ikea-dark-blue">
+                      {/* RWD Video Container (16:9) */}
+                      <VideoEmbed id={video.id} title={video.title} />
+                      
+                      <div className="p-4">
+                        {/* Video Title */}
+                        <h4 className="text-white text-md font-medium group-hover:text-ikea-yellow transition-colors">{video.title}</h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Full Playlist Link */}
+                <div className="mt-8 text-center">
+                    <a 
+                      href={category.playlistUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-ikea-light-yellow hover:text-white transition-colors border border-ikea-yellow/30 px-6 py-3 rounded-full hover:bg-ikea-yellow/10 group"
+                    >
+                      <span className="mr-2">View Full {category.title} Playlist</span>
+                      <ExternalLink size={14} />
+                    </a>
+                </div>
+              </section>
+            ))}
+          </main>
+
+          {/* Footer */}
+          <footer className="bg-ikea-dark-blue border-t border-ikea-yellow/30 py-20">
+            <div className="max-w-7xl mx-auto px-6 text-center">
+              <h2 className="text-3xl font-bold mb-8 tracking-widest text-white">CHUNG-YI WANG (PLUTO)</h2>
+              
+              <div className="flex justify-center space-x-8 mb-12">
+                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="Email">
+                  <Mail size={20} />
+                </a>
+                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="Instagram">
+                  <Instagram size={20} />
+                </a>
+                <a href="#" className="w-12 h-12 rounded-full bg-ikea-yellow/10 flex items-center justify-center text-ikea-light-yellow hover:text-ikea-blue hover:bg-ikea-yellow transition-all duration-300" title="YouTube">
+                  <Play size={20} fill="currentColor" />
+                </a>
+              </div>
+
+              <p className="text-ikea-light-yellow text-sm">
+                &copy; {new Date().getFullYear()} Chung-Yi Wang (PLUTO). All Rights Reserved.
+              </p>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    // FIX: Updated to React 18 createRoot API
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Portfolio />);
+    </script>
+</body>
+</html>
