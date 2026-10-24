@@ -47,7 +47,7 @@
         if (show) visible++;
       });
       status.textContent = `${String(visible).padStart(2, '0')} ${value === 'selected' ? 'selected projects' : 'projects'} / ${String(cards.length).padStart(2, '0')} in the archive`;
-      allButton.textContent = value === 'all' ? 'Back to selected work ↗' : 'Explore all 31 projects ↗';
+      allButton.textContent = value === 'all' ? 'Back to selected work ↗' : `Explore all ${cards.length} projects ↗`;
       allButton.dataset.target = value === 'all' ? 'selected' : 'all';
       if (updateUrl) {
         const url = new URL(location.href);

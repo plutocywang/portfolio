@@ -1,6 +1,6 @@
 # PLUTO SIGNAL — Pluto Wang Portfolio
 
-Chung-Yi Wang (Pluto) 的導演與影像藝術作品集。黑底、暖白、螢光綠，包含全部 31 件既有作品。
+Chung-Yi Wang (Pluto) 的導演與影像藝術作品集。黑底、暖白、螢光綠，包含 32 件作品（原有 31 件，加上 Lalamove 廣告）。
 
 ## 本機預覽
 
@@ -22,7 +22,7 @@ python3 -m http.server 8765 --directory dist
 - `cover-*.jpg`：既有 YouTube 作品封面。檔名與影片 ID 對應。
 - `*.ttf`、`*-LICENSE.txt`：本機字型與 OFL 授權。
 
-修改後重新執行 `python3 build.py`。新增作品時，加入作品資料和對應封面。以 `slug` 建立 `/projects/slug/` 靜態網址。
+修改後重新執行 `python3 build.py`。新增作品時，加入作品資料和對應封面；依顯示順序設定連續的 `number`。作品總數與各分類數量會自動更新。以 `slug` 建立 `/projects/slug/` 靜態網址。
 
 ## Netlify
 
@@ -38,4 +38,4 @@ python3 -m http.server 8765 --directory dist
 
 ## 驗證
 
-已檢查 33 個 HTML 頁面、708 個內部引用及全部 31 個原影片 ID。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
+已檢查 34 個 HTML 頁面、730 個內部引用，保留全部 31 個原影片 ID，另新增 Lalamove（cENHOJclU8E）。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
