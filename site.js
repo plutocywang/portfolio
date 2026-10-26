@@ -3,7 +3,14 @@
   document.documentElement.classList.remove('no-js');
   const menuButton = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.main-nav');
+  const workMenu = document.querySelector('.work-menu');
+  const workTrigger = workMenu?.querySelector('summary');
+  function closeWorkMenu(restoreFocus = false) {
+    if (workMenu) workMenu.open = false;
+    if (restoreFocus) workTrigger?.focus();
+  }
   function closeMenu(restoreFocus = false) {
+    closeWorkMenu();
     nav?.classList.remove('open');
     menuButton?.setAttribute('aria-expanded', 'false');
     if (menuButton) menuButton.querySelector('.menu-label').textContent = 'Menu';
@@ -17,12 +24,23 @@
   });
   nav?.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && nav?.classList.contains('open')) closeMenu(true);
+    if (event.key !== 'Escape') return;
+    if (workMenu?.open) closeWorkMenu(true);
+    else if (nav?.classList.contains('open')) closeMenu(true);
   });
   document.addEventListener('click', event => {
     if (!event.target.closest('.site-header')) closeMenu();
   });
   matchMedia('(min-width: 641px)').addEventListener('change', event => { if(event.matches) closeMenu(); });
+  workMenu?.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse' && matchMedia('(min-width: 641px)').matches) workMenu.open = true;
+  });
+  workMenu?.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse' && matchMedia('(min-width: 641px)').matches) closeWorkMenu();
+  });
+  workMenu?.addEventListener('focusout', event => {
+    if (!workMenu.contains(event.relatedTarget)) closeWorkMenu();
+  });
 
   const grid = document.querySelector('#project-grid');
   const filters = [...document.querySelectorAll('.filter-button')];
@@ -36,6 +54,10 @@
     function filterWork(value, updateUrl = false) {
       if (!filters.some(button => button.dataset.filter === value)) value = 'selected';
       filters.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === value)));
+      document.querySelectorAll('[data-work-filter]').forEach(link => {
+        if (link.dataset.workFilter === value) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
       grid.dataset.view = value;
       let visible = 0;
       const ordered = [...cards].sort((a,b) => value === 'selected' ? (selectedOrder.indexOf(a.dataset.slug) < 0 ? 999 : selectedOrder.indexOf(a.dataset.slug)) - (selectedOrder.indexOf(b.dataset.slug) < 0 ? 999 : selectedOrder.indexOf(b.dataset.slug)) : Number(a.dataset.order) - Number(b.dataset.order));
@@ -57,6 +79,17 @@
       }
     }
     filters.forEach(button => button.addEventListener('click', () => filterWork(button.dataset.filter, true)));
+    document.querySelectorAll('[data-work-filter]').forEach(link => {
+      link.addEventListener('click', event => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        const value = link.dataset.workFilter;
+        filterWork(value, true);
+        closeMenu();
+        document.querySelector('#work').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+        filters.find(button => button.dataset.filter === value)?.focus({preventScroll:true});
+      });
+    });
     allButton.addEventListener('click', () => {
       filterWork(allButton.dataset.target, true);
       document.querySelector('#work').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
@@ -107,8 +140,8 @@
     const sections = [...document.querySelectorAll('section[id="work"],section[id="about"],section[id="contact"]')];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if(entry.isIntersecting) nav?.querySelectorAll('a').forEach(a => {
-          if(a.hash === `#${entry.target.id}`) a.setAttribute('aria-current','location');
+        if(entry.isIntersecting) nav?.querySelectorAll(':scope > a, .work-trigger').forEach(a => {
+          if(a.hash === `#${entry.target.id}` || (a === workTrigger && entry.target.id === 'work')) a.setAttribute('aria-current','location');
           else a.removeAttribute('aria-current');
         });
       });

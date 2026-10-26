@@ -18,7 +18,7 @@ python3 -m http.server 8765 --directory dist
 - `content.json`：作品片名、分類、YouTube ID、說明、首頁主視覺與精選排序。
 - `pluto-wordmark.svg`：依原 PLUTO SIGNAL 概念圖重建的專屬向量字標，保留厚筆畫、方形輪廓與窄留白。首頁使用圖片替代文字維持可讀的標題，按比例縮放。
 - `styles.css`：版面、字型、色彩與響應式設計。
-- `site.js`：作品篩選、影片按需載入、手機選單與 Email 複製。
+- `site.js`：作品篩選、Work 分類下拉、影片按需載入、手機選單與 Email 複製。
 - `build.py`：首頁、個人介紹、獎項、經歷及作品頁模板。
 - `cover-*.jpg`：既有 YouTube 作品封面。檔名與影片 ID 對應。
 - `*.ttf`、`*-LICENSE.txt`：本機字型與 OFL 授權。
@@ -39,4 +39,11 @@ python3 -m http.server 8765 --directory dist
 
 ## 驗證
 
-已檢查 34 個 HTML 頁面、731 個內部引用，保留全部 31 個原影片 ID，另新增 Lalamove（cENHOJclU8E）。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
+已檢查 34 個 HTML 頁面、935 個內部引用，保留全部 31 個原影片 ID，另新增 Lalamove（cENHOJclU8E）。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
+
+## 作品導航與顯示
+
+- About 主標：One vision. Many forms.
+- 分類按鈕：桌面 16px／手機 14px，選中及滑過時使用珊瑚橘底、深色文字。
+- Work：桌面滑鼠移入展開分類；也可點擊或用 Enter／Space 展開、Escape 收起。手機在 Menu 裡點擊 Work 展開。
+- 從首頁選分類會立即篩選並更新網址；從作品內頁選分類會前往首頁對應類型。分類數量由作品資料自動產生。
