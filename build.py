@@ -6,7 +6,7 @@ ROOT=SOURCE/'dist'
 (ROOT/'assets/images').mkdir(parents=True,exist_ok=True)
 (ROOT/'assets/fonts').mkdir(parents=True,exist_ok=True)
 shutil.copy2(SOURCE/'content.json',ROOT/'content.json')
-for name in ['styles.css','site.js','favicon.svg','social-cover.jpg']:
+for name in ['styles.css','site.js','favicon.svg','social-cover.jpg','pluto-wordmark.svg']:
  shutil.copy2(SOURCE/name,ROOT/'assets'/name)
 for asset in SOURCE.glob('cover-*.jpg'):
  shutil.copy2(asset,ROOT/'assets/images'/asset.name.removeprefix('cover-'))
@@ -18,6 +18,9 @@ BY_SLUG={p['slug']:p for p in PROJECTS}
 BASE='https://plutowang.netlify.app'
 CSS_VERSION=hashlib.sha256((ROOT/'assets/styles.css').read_bytes()).hexdigest()[:10]
 JS_VERSION=hashlib.sha256((ROOT/'assets/site.js').read_bytes()).hexdigest()[:10]
+WORDMARK_VERSION=hashlib.sha256((ROOT/'assets/pluto-wordmark.svg').read_bytes()).hexdigest()[:10]
+FAVICON_VERSION=hashlib.sha256((ROOT/'assets/favicon.svg').read_bytes()).hexdigest()[:10]
+SOCIAL_VERSION=hashlib.sha256((ROOT/'assets/social-cover.jpg').read_bytes()).hexdigest()[:10]
 LABELS={'commercial':'Commercial','narrative':'Narrative','music':'Music video','documentary':'Documentary','newmedia':'New media'}
 PLAYLISTS={
  'commercial':'PLzVnmFjMEHZbn5Zfyc5xqTk__Ry2ro0wN',
@@ -29,13 +32,14 @@ def e(s): return html.escape(str(s),quote=True)
 def url(p):return '/projects/'+p['slug']+'/'
 def img(p):return '/assets/images/'+p['id']+'.jpg'
 def head(title,description,path='/',image='/assets/social-cover.jpg',preload=None,schema=None):
+ if image=='/assets/social-cover.jpg':image+='?v='+SOCIAL_VERSION
  preload_tag=f'<link rel="preload" as="image" href="{e(preload)}" fetchpriority="high">' if preload else ''
  structured='<script type="application/ld+json">'+json.dumps(schema,ensure_ascii=False).replace('</','<\\/')+'</script>' if schema else ''
  return f'''<!doctype html>
 <html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(description)}"><meta name="theme-color" content="#10110f">
 <link rel="canonical" href="{BASE}{path}"><meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:url" content="{BASE}{path}"><meta property="og:image" content="{BASE}{e(image)}"><meta property="og:site_name" content="PLUTO WANG"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css?v={CSS_VERSION}">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v={FAVICON_VERSION}"><link rel="stylesheet" href="/assets/styles.css?v={CSS_VERSION}">
 <link rel="preload" href="/assets/fonts/anton-0.ttf" as="font" type="font/ttf" crossorigin>{preload_tag}{structured}
 <script defer src="/assets/site.js?v={JS_VERSION}"></script></head><body>
 <a class="skip-link" href="#main">Skip to content</a>'''
@@ -57,7 +61,7 @@ def home():
  description='Chung-Yi Wang (Pluto), director and visual artist. Selected commercials, music videos, narrative films, documentaries and immersive new media projects.'
  schema={'@context':'https://schema.org','@type':'Person','name':'Chung-Yi Wang','alternateName':'Pluto Wang','url':BASE,'jobTitle':'Director / Visual Artist','email':'mailto:pluto.cywang@gmail.com'}
  out=head('PLUTO WANG — Director / Visual Artist',description,preload=img(hero),schema=schema)+header(True)
- out+=f'''<main id="main"><section class="container masthead" aria-label="Pluto Wang, director and visual artist"><h1 class="masthead-title">PLUTO</h1><div class="signal-line"><span class="mono"><span class="accent">Signal 001</span><span class="signal-extra"> / Selected transmissions</span></span><span class="cross" aria-hidden="true">+</span><span class="mono right">Director / Visual Artist</span></div>
+ out+=f'''<main id="main"><section class="container masthead" aria-label="Pluto Wang, director and visual artist"><h1 class="masthead-title"><img src="/assets/pluto-wordmark.svg?v={WORDMARK_VERSION}" alt="PLUTO" width="966" height="218" fetchpriority="high"></h1><div class="signal-line"><span class="mono"><span class="accent">Signal 001</span><span class="signal-extra"> / Selected transmissions</span></span><span class="cross" aria-hidden="true">+</span><span class="mono right">Director / Visual Artist</span></div>
 <a class="hero-link" href="{url(hero)}" aria-label="Watch {e(hero['title'])}"><div class="hero-frame"><img src="{img(hero)}" alt="A figure facing the sea in Daughter K Babbling" width="1280" height="720" fetchpriority="high"><span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span><span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span><div class="hero-overlay"><div><div class="hero-kicker mono"><span class="status-dot" aria-hidden="true"></span>Featured transmission / Music video</div><h2 class="hero-title">{e(hero['title'])}</h2></div><span class="play-link mono"><span class="play-circle" aria-hidden="true"></span>Watch film</span></div></div></a><div class="hero-caption mono"><span>Ling Yu × Lo Si-rong</span><span>Sound into image. Image into feeling.</span></div><div class="intro-line"><p>Stories that stay with you.<br>Images that take you somewhere else.</p><span class="mono muted">Commercials, cinema<br>&amp; immersive experiences</span></div></section>
 <section id="work" class="container section" aria-labelledby="work-title"><div class="section-heading"><div><span class="mono accent">01 / The work</span><h2 id="work-title">Selected transmissions.</h2></div><p class="section-note mono">Across screens, genres<br>and ways of seeing.</p></div><div class="filter-bar" role="group" aria-label="Filter works" hidden>'''
  for value,label in [('selected','Selected'),('all','All work'),*LABELS.items()]:

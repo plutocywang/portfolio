@@ -1,6 +1,6 @@
 # PLUTO SIGNAL — Pluto Wang Portfolio
 
-Chung-Yi Wang (Pluto) 的導演與影像藝術作品集。黑底、暖白、螢光綠，包含 32 件作品（原有 31 件，加上 Lalamove 廣告）。
+Chung-Yi Wang (Pluto) 的導演與影像藝術作品集。黑底、暖白、珊瑚橘（#F28C6F），包含 32 件作品（原有 31 件，加上 Lalamove 廣告）。
 
 ## 本機預覽
 
@@ -16,6 +16,7 @@ python3 -m http.server 8765 --directory dist
 ## 修改內容
 
 - `content.json`：作品片名、分類、YouTube ID、說明、首頁主視覺與精選排序。
+- `pluto-wordmark.svg`：依原 PLUTO SIGNAL 概念圖重建的專屬向量字標，保留厚筆畫、方形輪廓與窄留白。首頁使用圖片替代文字維持可讀的標題，按比例縮放。
 - `styles.css`：版面、字型、色彩與響應式設計。
 - `site.js`：作品篩選、影片按需載入、手機選單與 Email 複製。
 - `build.py`：首頁、個人介紹、獎項、經歷及作品頁模板。
@@ -38,4 +39,4 @@ python3 -m http.server 8765 --directory dist
 
 ## 驗證
 
-已檢查 34 個 HTML 頁面、730 個內部引用，保留全部 31 個原影片 ID，另新增 Lalamove（cENHOJclU8E）。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
+已檢查 34 個 HTML 頁面、731 個內部引用，保留全部 31 個原影片 ID，另新增 Lalamove（cENHOJclU8E）。瀏覽器測試包含分類計數、重新整理後的分類保留、手機選單、Escape 關閉、作品返回連結，以及 320/390/768/1024/1440/1920 像素寬度。首頁代表影片已實際播放；其餘影片未逐一完整播放。
